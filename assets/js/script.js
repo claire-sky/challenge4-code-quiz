@@ -1,7 +1,8 @@
 var timer = 0;
-var timerEl = document.getElementById('timeLeft');
+var timerEl = $("#timeLeft")[0];
+var quizContainer = $("#question")[0];
 var score = 0;
-var questions = [
+var questionList = [
         {
         question: "What does DOM stand for?",
         answers: {
@@ -51,8 +52,8 @@ var questions = [
             4: "="
         },
         correctAnswer: '3'
-    },
-]
+    }
+];
 
 // quiz start screen with button
 function startQuiz() {
@@ -64,35 +65,54 @@ function startQuiz() {
 
 // function to build quiz
 function buildQuiz() {
-    var output = [];
+    const output = [];
 
     // for each question
-    for(var i = 0; i < questions.length; i++) {
-        var answers = [];
+    questionList.forEach((currentQuestion, questionNumber) => {
+        const answers = [];
 
         // for each answer
-        for(number in questions[i].answers) {
+        for(num in currentQuestion.answers) {
             answers.push(
-                `<button type="button">${number}: ${questions[i].answers[number]}</button>`
+                `<button type="button" name="question${questionNumber}" value="${num}">
+                ${num}: ${currentQuestion.answers[num]}</button>`
             );
         }
 
         output.push(
-            `<div class="question"> ${questions[i].question} </div>
-            <div class="answers">${answers.join('')} + </div>`
+            `<div class="question"> ${currentQuestion.question} </div>
+            <div class="answers"> ${answers.join('')} </div>`
         );
-    }
+        });
 
     quizContainer.innerHTML = output.join('');
 };
 
+// function to show and hide questions
+function showQuestion(n) {
+    $(questionList[currentQuestion]).removeClass("active-slide");
+    $(questionList[n]).addClass("active-slide");
+    currentQuestion = n;
+};
+
+// function to advance to next question
+function showNext() {
+    showQuestion(currentQuestion + 1);
+};
+
 // function to show answer
 function showAnswer() {
+    // find selected answer
+    var userAnswer = $('.answers').click(function(){
+        alert(this.id);
+    });
 
     // right answer adds 20pts to score
-
+    if (userAnswer === questions[i].correctAnswer) {
+        score =+ 20;
+    }
     // wrong answer removes 5000 miliseconds from timer
-
+    else timer = timer - 5;
 };
 
 // function to end game
@@ -118,3 +138,4 @@ function countdown() {
 
 
 countdown();
+buildQuiz();

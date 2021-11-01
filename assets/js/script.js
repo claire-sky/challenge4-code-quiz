@@ -1,9 +1,11 @@
-var timer = 0;
+var timer = 30;
 var timerEl = $("#timeLeft")[0];
-var quizContainer = $("#question")[0];
+var quizContainer = $("#question-area")[0];
+// var set = $(".set")[0];
+// var currentSet = 0;
 var score = 0;
 var questionList = [
-        {
+    {
         question: "What does DOM stand for?",
         answers: {
             1: "Display Order Method",
@@ -11,7 +13,7 @@ var questionList = [
             3: "Display Object Method",
             4: "Document Object Model"
         },
-        correctAnswer: '4'
+        correctAnswer: 4
     },
     {
         question: "Which has a condition and will only stop running the code once the condition returns",
@@ -21,7 +23,7 @@ var questionList = [
             3: "switch",
             4: "break"
         },
-        correctAnswer: '1'
+        correctAnswer: 1
     },
     {
         question: "Which is not a data type?",
@@ -31,7 +33,7 @@ var questionList = [
             3: "Boolean",
             4: "null"
         },
-        correctAnswer: '2'
+        correctAnswer: 2
     },
     {
         question: "Which displays a dialog box with a specified message, along with an OK and a Cancel button?",
@@ -41,7 +43,7 @@ var questionList = [
             3: "confirm",
             4: "deny"
         },
-        correctAnswer: '3'
+        correctAnswer: 3
     },
     {
         question: "Which is not an operator?",
@@ -51,9 +53,24 @@ var questionList = [
             3: "@",
             4: "="
         },
-        correctAnswer: '3'
+        correctAnswer: 3
     }
 ];
+
+// timer
+function countdown() {
+    var timeInterval = setInterval(function() {
+    if (timer > 1) {
+      timerEl.textContent = timer;
+      timer = timer - 1;
+    }
+    else {
+      timerEl.textContent = 0;
+      clearInterval(timeInterval);
+    //   endGame();
+    };
+  }, 1000);
+};
 
 // quiz start screen with button
 function startQuiz() {
@@ -74,45 +91,51 @@ function buildQuiz() {
         // for each answer
         for(num in currentQuestion.answers) {
             answers.push(
-                `<button type="button" name="question${questionNumber}" value="${num}">
+                `<button type="button" name="${questionNumber}" value="${num}" class="clickAnswer">
                 ${num}: ${currentQuestion.answers[num]}</button>`
             );
         }
 
         output.push(
-            `<div class="question"> ${currentQuestion.question} </div>
-            <div class="answers"> ${answers.join('')} </div>`
+            `<div class="set">
+                <div class="question"> ${currentQuestion.question} </div>
+                <div class="answers"> ${answers.join(' <br> ')} </div>
+            </div>`
         );
         });
 
     quizContainer.innerHTML = output.join('');
 };
 
+$(".quiz").on("click", ".clickAnswer", function() {
+    // check answer against correctAnswer
+    if (this.value == questionList[this.name].correctAnswer) {
+        score += 20;
+        console.log(score);
+    } else {
+        clearInterval(timer);
+        timer = timer - 5;
+        console.log("fail")
+    };
+    // advance to next question
+});
+
 // function to show and hide questions
-function showQuestion(n) {
-    $(questionList[currentQuestion]).removeClass("active-slide");
-    $(questionList[n]).addClass("active-slide");
-    currentQuestion = n;
-};
+// function showSet() {
+//     var state = element.getAttribute("data-state");
+//     if (set = 0) {
+//         data-state = "visible";
+//     }
+
+
+    // set[currentSet].removeClass("active-set");
+    // set[n].addClass("active-set");
+    // currentSet = n;
+// };
 
 // function to advance to next question
 function showNext() {
-    showQuestion(currentQuestion + 1);
-};
-
-// function to show answer
-function showAnswer() {
-    // find selected answer
-    var userAnswer = $('.answers').click(function(){
-        alert(this.id);
-    });
-
-    // right answer adds 20pts to score
-    if (userAnswer === questions[i].correctAnswer) {
-        score =+ 20;
-    }
-    // wrong answer removes 5000 miliseconds from timer
-    else timer = timer - 5;
+    // showQuestion(currentQuestion + 1);
 };
 
 // function to end game
@@ -120,22 +143,7 @@ function endGame() {
 
 };
 
-// timer
-function countdown() {
-    var timer = 30;
-    var timeInterval = setInterval(function() {
-    if (timer > 1) {
-      timerEl.textContent = timer;
-      timer = timer - 1;
-    }
-    else {
-      timerEl.textContent = 0;
-      clearInterval(timeInterval);
-    //   endGame();
-    };
-  }, 1000);
-};
-
-
 countdown();
 buildQuiz();
+// showSet(currentSet);
+

@@ -17,11 +17,28 @@
         <div class="timer">
             <h4>Time: </h4>
             <h4 id="timeLeft"></h4>
-        </div>
     </header>
-    <section class="quiz">
+    <section class="start-quiz">
+        <h1>Coding Quiz Challenge</h1>
+        <h4>See if you can answer all 5 questions in 30 seconds. For fun, incorrect answers result in a 5 second penalty! ;)</h4>
+        <button class="start-quiz-btn" type="button">Start Quiz</button>
+    </section>
+    <section class="quiz show">
         <div id="question-area"></div>
         <div id="results"></div>
+    </section>
+    <section class="end-quiz show">
+        <h1>Coding Quiz Challenge</h1>
+        <h4>You scored </h4>
+        <label for="initials">Enter Initials: </label>
+        <input type="text" class="initial-text" id="intials">
+        <button class="submit-score" type="button">Submit Score</button>
+    </section>
+    <section class="high-score show">
+        <h2>High Scores</h2>
+        <ol class="highScoreList"></ol>
+        <button type="button" class="restart-btn">Go Back</button>
+        <button type="button" class="clear-btn">Clear High Scores</button>
     </section>
     
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>

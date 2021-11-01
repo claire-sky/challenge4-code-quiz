@@ -1,8 +1,7 @@
 var timer = 30;
 var timerEl = $("#timeLeft")[0];
 var quizContainer = $("#question-area")[0];
-// var set = $(".set")[0];
-// var currentSet = 0;
+var set = $(".set")[0];
 var score = 0;
 var questionList = [
     {
@@ -49,7 +48,7 @@ var questionList = [
         question: "Which is not an operator?",
         answers: {
             1: "&",
-            2: "|",
+            2: "||",
             3: "@",
             4: "="
         },
@@ -61,24 +60,23 @@ var questionList = [
 function countdown() {
     var timeInterval = setInterval(function() {
     if (timer > 1) {
-      timerEl.textContent = timer;
-      timer = timer - 1;
+        timerEl.textContent = timer;
+        timer = timer - 1;
     }
     else {
-      timerEl.textContent = 0;
-      clearInterval(timeInterval);
-    //   endGame();
+        timerEl.textContent = 0;
+        clearInterval(timeInterval);
+        endGame();
     };
   }, 1000);
 };
 
 // quiz start screen with button
-function startQuiz() {
-        "Coding Quiz Challenge",
-        "See if you can answer all 5 questions in 30 seconds. For fun, incorrect answers result in a 5 second penalty! ;)",
-        "Start Quiz"
+$(".start-quiz-btn").on("click", function() {
+    $(".start-quiz").addClass("show");
+    $(".quiz").removeClass("show");
     countdown();
-};
+});
 
 // function to build quiz
 function buildQuiz() {
@@ -118,20 +116,11 @@ $(".quiz").on("click", ".clickAnswer", function() {
         console.log("fail")
     };
     // advance to next question
+    set[this.name].removeClass("show");
+    // $(".set")[this.name + 1].addClass("show");
+    // set[this.name + 1].hidden = false;
 });
 
-// function to show and hide questions
-// function showSet() {
-//     var state = element.getAttribute("data-state");
-//     if (set = 0) {
-//         data-state = "visible";
-//     }
-
-
-    // set[currentSet].removeClass("active-set");
-    // set[n].addClass("active-set");
-    // currentSet = n;
-// };
 
 // function to advance to next question
 function showNext() {
@@ -140,10 +129,20 @@ function showNext() {
 
 // function to end game
 function endGame() {
-
+    $(".quiz").addClass("show");
+    $(".end-quiz").removeClass("show");
 };
 
-countdown();
+$(".submit-score").on("click", function() {
+    $(".end-quiz").addClass("show");
+    $(".high-score").removeClass("show");
+});
+
+$(".restart-btn").on("click", function() {
+    $(".high-score").addClass("show");
+    $(".start-quiz").removeClass("show");
+});
+
 buildQuiz();
 // showSet(currentSet);
 

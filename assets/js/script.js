@@ -1,7 +1,6 @@
 var timer = 30;
 var timerEl = $("#timeLeft")[0];
 var quizContainer = $("#question-area")[0];
-// var set = $(".set");
 var currentQuestion = 0;
 var score = 0;
 var questionList = [
@@ -90,7 +89,7 @@ function buildQuiz() {
 
         // add question and answer to output
         output.push(
-            `<div id="questionSet${questionNumber}" class="set show">
+            `<div id="questionSet${questionNumber}" class="show">
                 <div class="question"> ${currentQuestion.question} </div>
                 <div class="answers"> ${answers.join(' <br> ')} </div>
             </div>`
@@ -98,7 +97,6 @@ function buildQuiz() {
     });
 
     $("#question-area")[0].innerHTML = output.join('');
-    console.log(output.join(''));
 };
 
 // quiz start screen with button
@@ -113,17 +111,28 @@ $(".quiz").on("click", ".clickAnswer", function() {
     // advance to next question
     $("#questionSet" + currentQuestion).addClass("show");
     currentQuestion = currentQuestion + 1
-    console.log(currentQuestion);
     $("#questionSet" + currentQuestion).removeClass("show");
     
+    // show answer timer
+    var answerTimer = function() {
+        var answerTime = setInterval(function() {
+        $("#results")[0].innerHTML = "";
+        clearInterval(answerTime);
+        }, 1000 * 2);
+    };
+
     // check answer against correctAnswer
     if (this.value == questionList[this.name].correctAnswer) {
         score += 20;
         console.log(score);
+        $("#results")[0].innerHTML = "Correct!"
+        answerTimer();
     } else {
         clearInterval(timer);
         timer = timer - 5;
         console.log("fail")
+        $("#results")[0].innerHTML = "Nice Try!"
+        answerTimer();
     };
 });
 
@@ -138,6 +147,7 @@ function showSet(n) {
 function endGame() {
     $(".quiz").addClass("show");
     $(".end-quiz").removeClass("show");
+    $("#final-score")[0].innerHTML = "You Scored " + score + " out of 100.";
 };
 
 // function to submit score

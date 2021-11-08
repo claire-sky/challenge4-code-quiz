@@ -15,8 +15,7 @@
             <p>View High Scores</p>
         </div>
         <div class="timer">
-            <p>Time: </p>
-            <p id="timeLeft"></p>
+            <p>Time: <span class="timeLeft"></span></p>
     </header>
     <section class="start-quiz">
         <h1>Coding Quiz Challenge</h1>
@@ -25,18 +24,18 @@
     </section>
     <section class="quiz">
         <div id="question-area"></div>
-        <div id="results"></div>
+        <div class="results"></div>
     </section>
-    <section class="end-quiz show">
+    <section class="end-quiz hide">
         <h1>Coding Quiz Challenge</h1>
         <p id="final-score"></p>
         <label for="initials">Enter Initials: </label>
         <input type="text" class="initial-text" id="intials">
         <button class="submit-score" type="button">Submit Score</button>
     </section>
-    <section class="high-score show">
+    <section class="high-score hide">
         <h2>High Scores</h2>
-        <ol class="highScoreList"></ol>
+        <ol id="highScoreList"></ol>
         <button type="button" class="restart-btn">Go Back</button>
         <button type="button" class="clear-btn">Clear High Scores</button>
     </section>

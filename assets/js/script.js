@@ -1,8 +1,11 @@
-var timer = 30;
-var timerEl = $("#timeLeft")[0];
+var timer = 0;
+var timerEl = $(".timeLeft")[0];
+var timeInterval = 0
 var quizContainer = $("#question-area")[0];
 var currentQuestion = 0;
 var score = 0;
+var highScore = [];
+var highScoreContainer = $("#highScoreList")[0];
 var questionList = [
     {
         question: "What does DOM stand for?",
@@ -58,12 +61,12 @@ var questionList = [
 
 // timer
 function countdown() {
-    var timeInterval = setInterval(function() {
+    var timer = 30;
+    timeInterval = setInterval(function() {
     if (timer > 1) {
         timerEl.textContent = timer;
         timer = timer - 1;
-    }
-    else {
+    } else {
         timerEl.textContent = 0;
         clearInterval(timeInterval);
         endGame();
@@ -89,7 +92,7 @@ function buildQuiz() {
 
         // add question and answer to output
         output.push(
-            `<div id="questionSet${questionNumber}" class="show">
+            `<div id="questionSet${questionNumber}" class="hide">
                 <div class="question"> ${currentQuestion.question} </div>
                 <div class="answers"> ${answers.join(' <br> ')} </div>
             </div>`
@@ -101,23 +104,23 @@ function buildQuiz() {
 
 // quiz start screen with button
 $(".start-quiz-btn").on("click", function() {
-    $(".start-quiz").addClass("show");
-    $("#questionSet" + currentQuestion).removeClass("show");
+    currentQuestion = 0;
+    $(".start-quiz").addClass("hide");
+    $("#questionSet" + currentQuestion).removeClass("hide");
     countdown();
 });
 
 // selecting an answer
 $(".quiz").on("click", ".clickAnswer", function() {
     // advance to next question
-    $("#questionSet" + currentQuestion).addClass("show");
-    currentQuestion = currentQuestion + 1
-    $("#questionSet" + currentQuestion).removeClass("show");
+    $("#questionSet" + currentQuestion).addClass("hide");
+    currentQuestion = currentQuestion + 1;
+    $("#questionSet" + currentQuestion).removeClass("hide");
     
     // show answer timer
     var answerTimer = function() {
         var answerTime = setInterval(function() {
-        $("#results")[0].innerHTML = "";
-        clearInterval(answerTime);
+        $(".results")[0].innerHTML = "";
         }, 1000 * 2);
     };
 
@@ -125,42 +128,86 @@ $(".quiz").on("click", ".clickAnswer", function() {
     if (this.value == questionList[this.name].correctAnswer) {
         score += 20;
         console.log(score);
-        $("#results")[0].innerHTML = "Correct!"
+        $(".results")[0].innerHTML = "Correct!";
         answerTimer();
     } else {
         clearInterval(timer);
         timer = timer - 5;
         console.log("fail")
-        $("#results")[0].innerHTML = "Nice Try!"
+        $(".results")[0].innerHTML = "Nice Try!";
         answerTimer();
     };
-});
 
-// advance questions
-function showSet(n) {
-    set[currentSet].addClass("show");
-    set[n].removeClass("show");
-    currentSet = n;
-};
+    // end game if last question is answered
+    if (currentQuestion === 5) {
+            endGame();
+            clearTimeout(timeInterval);
+            timerEl.textContent = 0;
+        };
+});
 
 // function to end game
 function endGame() {
-    $(".quiz").addClass("show");
-    $(".end-quiz").removeClass("show");
+    $(".quiz").addClass("hide");
+    $(".end-quiz").removeClass("hide");
     $("#final-score")[0].innerHTML = "You Scored " + score + " out of 100.";
 };
 
 // function to submit score
 $(".submit-score").on("click", function() {
-    $(".end-quiz").addClass("show");
-    $(".high-score").removeClass("show");
+    loadScores();
+
+    // get initials
+    var initials = document.querySelector("input").value;
+    if (!initials) {
+        alert("Please enter initials");
+        return false;
+    } else {
+        highScore.push({"userInitials": initials, "userScore": score});
+    }
+    console.log(highScore);
+    localStorage.setItem("highScore", JSON.stringify(highScore));
+
+
+    // show high score page
+    $(".end-quiz").addClass("hide");
+    $(".high-score").removeClass("hide");
+
+    displayScores();
 });
+
+// function to load scores from local storage on page load
+var loadScores = function() {
+    highScore = JSON.parse(localStorage.getItem("highScore"));
+    if (!highScore) {
+        highScore = [];
+    };
+};
+
+var displayScores = function() {
+    loadScores();
+    for (var i = 0; i < highScore.length; i++) {
+        var li = document.createElement("li");
+        li.textContent = `${highScore[i].userInitials}: ${highScore[i].userScore}`;
+        console.log(li);
+
+        //add list to page
+        highScoreContainer.appendChild(li);
+    };
+
+    // const scoreList = [];
+
+    // document.querySelector(".highScoreList").innerHTML = scoreList.join('');
+};
 
 // function to restart game
 $(".restart-btn").on("click", function() {
-    $(".high-score").addClass("show");
-    $(".start-quiz").removeClass("show");
+    location.reload();
+});
+
+// function to clear scores
+$(".clear-btn").on("click", function() {
+    localStorage.setItem("highScore", JSON.stringify(""));
 });
 
 buildQuiz();
-// showSet(currentSet);

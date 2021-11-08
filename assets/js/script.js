@@ -1,7 +1,8 @@
 var timer = 30;
 var timerEl = $("#timeLeft")[0];
 var quizContainer = $("#question-area")[0];
-var set = $(".set")[0];
+// var set = $(".set");
+var currentQuestion = 0;
 var score = 0;
 var questionList = [
     {
@@ -71,13 +72,6 @@ function countdown() {
   }, 1000);
 };
 
-// quiz start screen with button
-$(".start-quiz-btn").on("click", function() {
-    $(".start-quiz").addClass("show");
-    $(".quiz").removeClass("show");
-    countdown();
-});
-
 // function to build quiz
 function buildQuiz() {
     const output = [];
@@ -94,18 +88,34 @@ function buildQuiz() {
             );
         }
 
+        // add question and answer to output
         output.push(
-            `<div class="set">
+            `<div id="questionSet${questionNumber}" class="set show">
                 <div class="question"> ${currentQuestion.question} </div>
                 <div class="answers"> ${answers.join(' <br> ')} </div>
             </div>`
         );
-        });
+    });
 
-    quizContainer.innerHTML = output.join('');
+    $("#question-area")[0].innerHTML = output.join('');
+    console.log(output.join(''));
 };
 
+// quiz start screen with button
+$(".start-quiz-btn").on("click", function() {
+    $(".start-quiz").addClass("show");
+    $("#questionSet" + currentQuestion).removeClass("show");
+    countdown();
+});
+
+// selecting an answer
 $(".quiz").on("click", ".clickAnswer", function() {
+    // advance to next question
+    $("#questionSet" + currentQuestion).addClass("show");
+    currentQuestion = currentQuestion + 1
+    console.log(currentQuestion);
+    $("#questionSet" + currentQuestion).removeClass("show");
+    
     // check answer against correctAnswer
     if (this.value == questionList[this.name].correctAnswer) {
         score += 20;
@@ -115,16 +125,13 @@ $(".quiz").on("click", ".clickAnswer", function() {
         timer = timer - 5;
         console.log("fail")
     };
-    // advance to next question
-    set[this.name].removeClass("show");
-    // $(".set")[this.name + 1].addClass("show");
-    // set[this.name + 1].hidden = false;
 });
 
-
-// function to advance to next question
-function showNext() {
-    // showQuestion(currentQuestion + 1);
+// advance questions
+function showSet(n) {
+    set[currentSet].addClass("show");
+    set[n].removeClass("show");
+    currentSet = n;
 };
 
 // function to end game
@@ -133,11 +140,13 @@ function endGame() {
     $(".end-quiz").removeClass("show");
 };
 
+// function to submit score
 $(".submit-score").on("click", function() {
     $(".end-quiz").addClass("show");
     $(".high-score").removeClass("show");
 });
 
+// function to restart game
 $(".restart-btn").on("click", function() {
     $(".high-score").addClass("show");
     $(".start-quiz").removeClass("show");
@@ -145,4 +154,3 @@ $(".restart-btn").on("click", function() {
 
 buildQuiz();
 // showSet(currentSet);
-

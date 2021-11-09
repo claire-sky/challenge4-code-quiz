@@ -181,6 +181,7 @@ var loadScores = function() {
 var showHighScoresPage = function() {
     $(".end-quiz").addClass("hide");
     $(".start-quiz").addClass("hide");
+    $(".quiz").addClass("hide");
     $(".high-score").removeClass("hide");
 };
 
@@ -212,6 +213,7 @@ $(".clear-btn").on("click", function() {
 // function to view high score from start screen
 $(".view-high-score").on("click", function() {
     showHighScoresPage();
+    displayScores();
 });
 
 buildQuiz();

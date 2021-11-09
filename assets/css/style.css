@@ -41,3 +41,11 @@ button:hover{
 .clickAnswer:hover {
   background-color: purple;
 }
+
+ol {
+  list-style-type: none;
+}
+
+.view-high-score:hover {
+  background-color: purple;
+}

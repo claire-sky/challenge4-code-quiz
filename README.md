@@ -20,4 +20,4 @@ SO THAT I can gauge my progress compared to my peers
 
 The following image demonstrates the web application's appearance and functionality:
 
-![* Description.](./assets/images/...)
+![* Description.](./assets/images/code-quiz-screens.jpg)

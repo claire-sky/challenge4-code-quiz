@@ -1,11 +1,9 @@
 var timer = 0;
 var timerEl = $(".timeLeft")[0];
 var timeInterval = 0
-var quizContainer = $("#question-area")[0];
 var currentQuestion = 0;
 var score = 0;
 var highScore = [];
-var highScoreContainer = $("#highScoreList")[0];
 var questionList = [
     {
         question: "What does DOM stand for?",
@@ -127,13 +125,11 @@ $(".quiz").on("click", ".clickAnswer", function() {
     // check answer against correctAnswer
     if (this.value == questionList[this.name].correctAnswer) {
         score += 20;
-        console.log(score);
         $(".results")[0].innerHTML = "Correct!";
         answerTimer();
     } else {
         clearInterval(timer);
         timer = timer - 5;
-        console.log("fail")
         $(".results")[0].innerHTML = "Nice Try!";
         answerTimer();
     };
@@ -165,18 +161,15 @@ $(".submit-score").on("click", function() {
     } else {
         highScore.push({"userInitials": initials, "userScore": score});
     }
-    console.log(highScore);
+
+    // submit high score to local storage
     localStorage.setItem("highScore", JSON.stringify(highScore));
 
-
-    // show high score page
-    $(".end-quiz").addClass("hide");
-    $(".high-score").removeClass("hide");
-
+    showHighScoresPage();
     displayScores();
 });
 
-// function to load scores from local storage on page load
+// function to load scores from local storage
 var loadScores = function() {
     highScore = JSON.parse(localStorage.getItem("highScore"));
     if (!highScore) {
@@ -184,20 +177,25 @@ var loadScores = function() {
     };
 };
 
+// show high score page
+var showHighScoresPage = function() {
+    $(".end-quiz").addClass("hide");
+    $(".start-quiz").addClass("hide");
+    $(".high-score").removeClass("hide");
+};
+
+// function to add high scores to high score page
 var displayScores = function() {
     loadScores();
+
+    // loop through scores and add to order list
     for (var i = 0; i < highScore.length; i++) {
         var li = document.createElement("li");
         li.textContent = `${highScore[i].userInitials}: ${highScore[i].userScore}`;
-        console.log(li);
 
-        //add list to page
-        highScoreContainer.appendChild(li);
+        // add list to page
+        $("#highScoreList")[0].appendChild(li);
     };
-
-    // const scoreList = [];
-
-    // document.querySelector(".highScoreList").innerHTML = scoreList.join('');
 };
 
 // function to restart game
@@ -208,6 +206,12 @@ $(".restart-btn").on("click", function() {
 // function to clear scores
 $(".clear-btn").on("click", function() {
     localStorage.setItem("highScore", JSON.stringify(""));
+    location.reload();
+});
+
+// function to view high score from start screen
+$(".view-high-score").on("click", function() {
+    showHighScoresPage();
 });
 
 buildQuiz();
